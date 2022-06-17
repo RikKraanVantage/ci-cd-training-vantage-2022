@@ -1,0 +1,41 @@
+name: Test code and app
+on:
+  push:
+#    paths:
+#      - config.py
+#      - src/**
+#      - app/**
+jobs:
+  test_model:
+    name: Test processed code and model
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v2
+
+      - name: Environment setup
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+          cache: pip
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      - name: Test processed code and ML model
+        run: |
+          make test
+      - name: Build and run app locally
+        run: |
+          docker build -t ci-cd-test . 
+          docker run -p 3000:3000 -t ci-cd-test &
+          sleep 10
+          docker ps -q --filter ancestor="ci-cd-test" | xargs -r docker stop
