@@ -1,6 +1,5 @@
 # Vantage CI/CD training
-The idea of this hands-on is to generate a CI/CD pipeline based on this dummy repo.
-
+The idea of this hands-on is to generate a CI/CD pipeline based on this dummy repository.
 
 ## Setup
 
